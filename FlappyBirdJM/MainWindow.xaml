@@ -6,7 +6,27 @@
         xmlns:local="clr-namespace:FlappyBirdJM"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
-
-    </Grid>
+	<Grid>
+		<Canvas x:Name="Hatter">
+			<Image Source="/Kepek/Normal_Hatter.jpg" Height="448" Width="800" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+		</Canvas>
+		<Canvas x:Name="Gombok">
+			<Button x:Name="Vissza" Content="Vissza" Canvas.Left="340" Canvas.Top="100" Height="55" Width="110" Click="Vissza_Click"/>
+			<Button x:Name="Palyak" Content="Pályák" Canvas.Left="340" Canvas.Top="100" Height="55" Width="110" Click="Palyak_Click"/>
+			<Button x:Name="Rekordok" Content="Rekordok" Canvas.Left="340" Canvas.Top="260 " Height="55" Width="110" Click="Rekordok_Click"/>
+			<Button x:Name="Normal" Content="Normál" Canvas.Left="340" Canvas.Top="80 " Height="55" Width="110" Visibility="Hidden" Click="Normal_Click"/>
+			<Button x:Name="Eso" Content="Esős" Canvas.Left="340" Canvas.Top="150 " Height="55" Width="110" Visibility="Hidden" Click="Eso_Click"/>
+			<Button x:Name="Kod" Content="Ködös" Canvas.Left="340" Canvas.Top="220 " Height="55" Width="110" Visibility="Hidden" Click="Kod_Click"/>
+			<Button x:Name="Kodos_Eso" Content="Ködös Eső" Canvas.Left="340" Canvas.Top="290 " Height="55" Width="110" Visibility="Hidden" Click="KodosEso_Click"/>
+		</Canvas>
+		<Canvas x:Name="Rekords">
+			<TextBlock x:Name="NormalRek" Canvas.Left="345" TextWrapping="Wrap" Text="Normál Rekord:" Canvas.Top="170" Visibility="Hidden" Foreground="WhiteSmoke"/>
+			<TextBlock x:Name="EsoRek" Canvas.Left="345" TextWrapping="Wrap" Text="Esős Rekord:" Canvas.Top="190" Visibility="Hidden" Foreground="WhiteSmoke"/>
+			<TextBlock x:Name="KodRek" Canvas.Left="345" TextWrapping="Wrap" Text="Ködös Rekord:" Canvas.Top="210" Visibility="Hidden" Foreground="WhiteSmoke"/>
+			<TextBlock x:Name="KodEsoRek" Canvas.Left="345" TextWrapping="Wrap" Text="Ködös eső Rekord:" Canvas.Top="230" Visibility="Hidden" Foreground="WhiteSmoke"/>
+		</Canvas>
+		<Canvas>
+			<Image x:Name="Birb" Height="50" Canvas.Left="55" Source="/Kepek/Birb.png" Stretch="Fill" Canvas.Top="175" Width="50"/>
+		</Canvas>
+	</Grid>
 </Window>

@@ -8,4 +8,14 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="Kepek\Birb.png" />
+    <None Remove="Kepek\Normal_Hatter.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Kepek\Birb.png" />
+    <Resource Include="Kepek\Normal_Hatter.jpg" />
+  </ItemGroup>
+
 </Project>
