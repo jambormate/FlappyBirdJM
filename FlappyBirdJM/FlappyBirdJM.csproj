@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <None Remove="Kepek\Birb.png" />
+    <None Remove="Kepek\esosHatter.webp" />
     <None Remove="Kepek\Normal_Hatter.jpg" />
   </ItemGroup>
 

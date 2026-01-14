@@ -25,8 +25,19 @@
 			<TextBlock x:Name="KodRek" Canvas.Left="345" TextWrapping="Wrap" Text="Ködös Rekord:" Canvas.Top="210" Visibility="Hidden" Foreground="WhiteSmoke"/>
 			<TextBlock x:Name="KodEsoRek" Canvas.Left="345" TextWrapping="Wrap" Text="Ködös eső Rekord:" Canvas.Top="230" Visibility="Hidden" Foreground="WhiteSmoke"/>
 		</Canvas>
+		<Canvas x:Name="cso" Visibility="Hidden">
+			<Rectangle x:Name="csoTop1" Width="55" Fill="GreenYellow"/>
+			<Rectangle x:Name="csoBottom1" Width="55" Fill="GreenYellow"/>
+			<Rectangle x:Name="csoTop2" Width="55" Fill="GreenYellow"/>
+			<Rectangle x:Name="csoBottom2" Width="55" Fill="GreenYellow"/>
+			<Rectangle x:Name="csoTop3" Width="55" Fill="GreenYellow"/>
+			<Rectangle x:Name="csoBottom3" Width="55" Fill="GreenYellow"/>
+			<Rectangle x:Name="csoTop4" Width="55" Fill="GreenYellow"/>
+			<Rectangle x:Name="csoBottom4" Width="55" Fill="GreenYellow"/>
+		</Canvas>
 		<Canvas>
 			<Image x:Name="Birb" Height="50" Canvas.Left="55" Source="/Kepek/Birb.png" Stretch="Fill" Canvas.Top="175" Width="50"/>
 		</Canvas>
+		<Canvas x:Name="RainLayer" IsHitTestVisible="False" />
 	</Grid>
 </Window>
