@@ -98,6 +98,7 @@ namespace FlappyBirdJM
 			Kodos_Eso.Visibility = Visibility.Hidden;
 			cso.Visibility = Visibility.Visible;
 			aktualisPalya = PalyaTipus.Normal;
+			gravity = 2;
 			StartGame();
 		}
 		private void Eso_Click(object sender, RoutedEventArgs e)
@@ -121,6 +122,7 @@ namespace FlappyBirdJM
 			cso.Visibility = Visibility.Visible;
 			aktualisPalya = PalyaTipus.Kod;
 			KodSzintDoboz.Visibility = Visibility.Visible;
+			gravity = 2;
 			KodKezdes();
 			StartGame();
 		}
