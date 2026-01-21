@@ -31,7 +31,7 @@ namespace FlappyBirdJM
 
 		List<(Rectangle top, Rectangle bottom, double x)> csovek;
 
-		double gravity = 1.5;
+		double gravity = 2;
 		double jumpStrength = -15;
 		double velocityY = 0;
 
@@ -41,6 +41,7 @@ namespace FlappyBirdJM
 		int esoRekord = 0;
 		int kodosesoRekord = 0;
 		double TerMagassag = 360;
+
 
 		private void Palyak_Click(object sender, RoutedEventArgs e)
 		{
@@ -89,7 +90,7 @@ namespace FlappyBirdJM
 			Kodos_Eso.Visibility = Visibility.Hidden;
 			cso.Visibility = Visibility.Visible;
 			StartRain();
-			gravity = 2.5;
+			gravity = 2.75;
 			StartGame();
 		}
 		private void Kod_Click(object sender, RoutedEventArgs e)
@@ -109,7 +110,7 @@ namespace FlappyBirdJM
 			Kodos_Eso.Visibility = Visibility.Hidden;
 			cso.Visibility = Visibility.Visible;
 			StartRain();
-			gravity = 2.5;
+			gravity = 2.75;
 			StartGame();
 		}
 
@@ -138,21 +139,43 @@ namespace FlappyBirdJM
 			}
 			return maxX;
 		}
+		private void csovekVissza(Rectangle top, Rectangle bottom, double startX)
+		{
+			double minTopHeight = 40;
+			double maxTopHeight = TerMagassag - csoLyuk - 40;
+
+			double topHeight = rand.Next((int)minTopHeight, (int)maxTopHeight);
+
+			double bottomHeight = TerMagassag - topHeight - csoLyuk;
+
+			top.Height = topHeight;
+			bottom.Height = bottomHeight;
+
+			Canvas.SetLeft(top, startX);
+			Canvas.SetTop(top, 0);
+
+			Canvas.SetLeft(bottom, startX);
+			Canvas.SetTop(bottom, topHeight + csoLyuk);
+		}
 
 		private void StartGame()
 		{
 			gameRunning = true;
+
 			csovekKezsitese();
 
 			velocityY = 0;
 			Canvas.SetTop(Birb, 175);
 
-
+			gameTimer.Stop();
+			gameTimer.Tick -= GameLoop;
 			gameTimer.Interval = TimeSpan.FromMilliseconds(20);
 			gameTimer.Tick += GameLoop;
 			gameTimer.Start();
 
+			this.KeyDown -= MainWindow_KeyDown;
 			this.KeyDown += MainWindow_KeyDown;
+
 			this.Focus();
 		}
 		private void GameLoop(object sender, EventArgs e)
@@ -194,6 +217,8 @@ namespace FlappyBirdJM
 
 				csovek[i] = (top, bottom, x);
 			}
+			Utkozes();
+			Szelek();
 		}
 		private void MainWindow_KeyDown(object sender, KeyEventArgs e)
 		{
@@ -205,24 +230,6 @@ namespace FlappyBirdJM
 			}
 		}
 
-		private void csovekVissza(Rectangle top, Rectangle bottom, double startX)
-		{
-			double minTopHeight = 40;
-			double maxTopHeight = TerMagassag - csoLyuk - 40;
-
-			double topHeight = rand.Next((int)minTopHeight, (int)maxTopHeight);
-
-			double bottomHeight = TerMagassag - topHeight - csoLyuk;
-
-			top.Height = topHeight;
-			bottom.Height = bottomHeight;
-
-			Canvas.SetLeft(top, startX);
-			Canvas.SetTop(top, 0);
-
-			Canvas.SetLeft(bottom, startX);
-			Canvas.SetTop(bottom, topHeight + csoLyuk);
-		}
 
 		DispatcherTimer rainTimer = new DispatcherTimer();
 		Random random = new Random();
@@ -267,6 +274,92 @@ namespace FlappyBirdJM
 
 				drop.BeginAnimation(Canvas.TopProperty, fallAnimation);
 			}
+		}
+		private Rect BirbRect()
+		{
+			double x = Canvas.GetLeft(Birb);
+			double y = Canvas.GetTop(Birb);
+
+			return new Rect(x + 6, y + 6, Birb.Width - 10, Birb.Height - 10);
+		}
+		private Rect CsoRect(Rectangle rect)
+		{
+			double x = Canvas.GetLeft(rect);
+			double y = Canvas.GetTop(rect);
+
+			const double margin = 4;
+
+			return new Rect(
+				 x + margin,
+				 y + margin,
+				 rect.Width - margin * 2,
+				 rect.Height - margin * 2
+			);
+		}
+		private void Utkozes()
+		{
+			Rect birbRect = BirbRect();
+
+			foreach (var (top, bottom, _) in csovek)
+			{
+				Rect topRect = CsoRect(top);
+				Rect bottomRect = CsoRect(bottom);
+
+				if (birbRect.IntersectsWith(topRect) ||
+					birbRect.IntersectsWith(bottomRect))
+				{
+					GameOver();
+					return;
+				}
+			}
+		}
+		private void Szelek()
+		{
+			double top = Canvas.GetTop(Birb);
+
+			if (top <= 0 || top + Birb.Height >= 360)
+			{
+				GameOver();
+			}
+		}
+		private void GameOver()
+		{
+			gameRunning = false;
+			gameTimer.Stop();
+			rainTimer.Stop();
+
+			MessageBox.Show("Game Over", "Flappy Bird");
+			VisszaJatek();
+		}
+		private void VisszaJatek()
+		{
+			gameRunning = false;
+
+			gameTimer.Stop();
+			rainTimer.Stop();
+
+			Canvas.SetTop(Birb, 175);
+
+			cso.Visibility = Visibility.Hidden;
+
+			RainLayer.Children.Clear();
+
+			Palyak.Visibility = Visibility.Visible;
+			Rekordok.Visibility = Visibility.Visible;
+
+			Normal.Visibility = Visibility.Hidden;
+			Kod.Visibility = Visibility.Hidden;
+			Eso.Visibility = Visibility.Hidden;
+			Kodos_Eso.Visibility = Visibility.Hidden;
+
+			Vissza.Visibility = Visibility.Hidden;
+
+			NormalRek.Visibility = Visibility.Hidden;
+			EsoRek.Visibility = Visibility.Hidden;
+			KodRek.Visibility = Visibility.Hidden;
+			KodEsoRek.Visibility = Visibility.Hidden;
+
+			this.KeyDown -= MainWindow_KeyDown;
 		}
 	}
 }
