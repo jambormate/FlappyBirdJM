@@ -10,6 +10,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace FlappyBirdJM
 {
@@ -29,7 +30,7 @@ namespace FlappyBirdJM
 		double csoLyuk = 140;
 		double csoTerulet = 280;
 
-		List<(Rectangle top, Rectangle bottom, double x)> csovek;
+		List<(Rectangle top, Rectangle bottom, double x, bool pontmegvan)> csovek;
 
 		double gravity = 2;
 		double jumpStrength = -15;
@@ -41,6 +42,17 @@ namespace FlappyBirdJM
 		int esoRekord = 0;
 		int kodosesoRekord = 0;
 		double TerMagassag = 360;
+		int pontszam = 0;
+
+		enum PalyaTipus
+		{
+			Normal,
+			Kod,
+			Eso,
+			KodosEso
+		}
+
+		PalyaTipus aktualisPalya;
 
 
 		private void Palyak_Click(object sender, RoutedEventArgs e)
@@ -57,11 +69,16 @@ namespace FlappyBirdJM
 		private void Rekordok_Click(object sender, RoutedEventArgs e)
 		{
 			Palyak.Visibility = Visibility.Hidden;
+			Vissza.Visibility= Visibility.Visible;
 			Rekordok.Visibility = Visibility.Hidden;
 			NormalRek.Visibility = Visibility.Visible;
 			EsoRek.Visibility = Visibility.Visible;
 			KodRek.Visibility = Visibility.Visible;
 			KodEsoRek.Visibility = Visibility.Visible;
+			NormalRek.Text = $"Normál Rekord: {normalRekord}";
+			EsoRek.Text = $"Esős Rekord: {esoRekord}";
+			KodRek.Text = $"Ködös Rekord: {kodRekord}";
+			KodEsoRek.Text = $"Ködös eső Rekord: {kodosesoRekord}";
 		}
 
 		private void Vissza_Click(object sender, RoutedEventArgs e)
@@ -80,6 +97,7 @@ namespace FlappyBirdJM
 			Eso.Visibility = Visibility.Hidden;
 			Kodos_Eso.Visibility = Visibility.Hidden;
 			cso.Visibility = Visibility.Visible;
+			aktualisPalya = PalyaTipus.Normal;
 			StartGame();
 		}
 		private void Eso_Click(object sender, RoutedEventArgs e)
@@ -89,7 +107,8 @@ namespace FlappyBirdJM
 			Eso.Visibility = Visibility.Hidden;
 			Kodos_Eso.Visibility = Visibility.Hidden;
 			cso.Visibility = Visibility.Visible;
-			StartRain();
+			aktualisPalya = PalyaTipus.Eso;
+			EsoKezdes();
 			gravity = 2.75;
 			StartGame();
 		}
@@ -100,6 +119,9 @@ namespace FlappyBirdJM
 			Eso.Visibility = Visibility.Hidden;
 			Kodos_Eso.Visibility = Visibility.Hidden;
 			cso.Visibility = Visibility.Visible;
+			aktualisPalya = PalyaTipus.Kod;
+			KodSzintDoboz.Visibility = Visibility.Visible;
+			KodKezdes();
 			StartGame();
 		}
 		private void KodosEso_Click(object sender, RoutedEventArgs e)
@@ -109,19 +131,22 @@ namespace FlappyBirdJM
 			Eso.Visibility = Visibility.Hidden;
 			Kodos_Eso.Visibility = Visibility.Hidden;
 			cso.Visibility = Visibility.Visible;
-			StartRain();
+			aktualisPalya = PalyaTipus.KodosEso;
+			KodSzintDoboz.Visibility = Visibility.Visible;
+			KodKezdes();
+			EsoKezdes();
 			gravity = 2.75;
 			StartGame();
 		}
 
 		private void csovekKezsitese()
 		{
-			csovek = new List<(Rectangle, Rectangle, double)>
+			csovek = new List<(Rectangle, Rectangle, double, bool)>
 		{
-			(csoTop1, csoBottom1, 800),
-			(csoTop2, csoBottom2, 800 + csoTerulet),
-			(csoTop3, csoBottom3, 800 + csoTerulet * 2),
-			(csoTop4, csoBottom4, 800 + csoTerulet * 3)
+			(csoTop1, csoBottom1, 800, false),
+			(csoTop2, csoBottom2, 800 + csoTerulet, false),
+			(csoTop3, csoBottom3, 800 + csoTerulet * 2, false),
+			(csoTop4, csoBottom4, 800 + csoTerulet * 3, false)
 		};
 
 			foreach (var csok in csovek)
@@ -161,6 +186,9 @@ namespace FlappyBirdJM
 		private void StartGame()
 		{
 			gameRunning = true;
+			pontszam = 0;
+			PontText.Text = "0";
+			PontText.Visibility = Visibility.Visible;
 
 			csovekKezsitese();
 
@@ -203,19 +231,27 @@ namespace FlappyBirdJM
 
 			for (int i = 0; i < csovek.Count; i++)
 			{
-				var (top, bottom, x) = csovek[i];
+				var (top, bottom, x, pontmegvan) = csovek[i];
 				x -= csoSebesseg;
 
 				Canvas.SetLeft(top, x);
 				Canvas.SetLeft(bottom, x);
 
+				if (!pontmegvan && x + top.Width < Canvas.GetLeft(Birb))
+				{
+					pontszam++;
+					PontText.Text = pontszam.ToString();
+					pontmegvan = true;
+				}
+
 				if (x < -60)
 				{
 					x = szelsoCso() + csoTerulet;
 					csovekVissza(top, bottom, x);
+					pontmegvan = false;
 				}
 
-				csovek[i] = (top, bottom, x);
+				csovek[i] = (top, bottom, x, pontmegvan);
 			}
 			Utkozes();
 			Szelek();
@@ -234,7 +270,7 @@ namespace FlappyBirdJM
 		DispatcherTimer rainTimer = new DispatcherTimer();
 		Random random = new Random();
 
-		private void StartRain()
+		private void EsoKezdes()
 		{
 			rainTimer.Interval = TimeSpan.FromMilliseconds(50);
 			rainTimer.Tick += RainTimer_Tick;
@@ -300,7 +336,7 @@ namespace FlappyBirdJM
 		{
 			Rect birbRect = BirbRect();
 
-			foreach (var (top, bottom, _) in csovek)
+			foreach (var (top, bottom, _, _) in csovek)
 			{
 				Rect topRect = CsoRect(top);
 				Rect bottomRect = CsoRect(bottom);
@@ -330,6 +366,7 @@ namespace FlappyBirdJM
 
 			MessageBox.Show("Game Over", "Flappy Bird");
 			VisszaJatek();
+			RekordFrissites();
 		}
 		private void VisszaJatek()
 		{
@@ -337,6 +374,7 @@ namespace FlappyBirdJM
 
 			gameTimer.Stop();
 			rainTimer.Stop();
+			PontText.Visibility = Visibility.Hidden;
 
 			Canvas.SetTop(Birb, 175);
 
@@ -360,6 +398,49 @@ namespace FlappyBirdJM
 			KodEsoRek.Visibility = Visibility.Hidden;
 
 			this.KeyDown -= MainWindow_KeyDown;
+			KodSzintDoboz.Visibility = Visibility.Hidden;
+		}
+
+		private void RekordFrissites()
+		{
+			switch (aktualisPalya)
+			{
+				case PalyaTipus.Normal:
+					if (pontszam > normalRekord)
+						normalRekord = pontszam;
+					break;
+
+				case PalyaTipus.Kod:
+					if (pontszam > kodRekord)
+						kodRekord = pontszam;
+					break;
+
+				case PalyaTipus.Eso:
+					if (pontszam > esoRekord)
+						esoRekord = pontszam;
+					break;
+
+				case PalyaTipus.KodosEso:
+					if (pontszam > kodosesoRekord)
+						kodosesoRekord = pontszam;
+					break;
+			}
+		}
+
+		private void KodKezdes()
+		{
+			DoubleAnimation KodAnim = new DoubleAnimation
+			{
+				From = 0.45,
+				To = 0.55,
+				Duration = TimeSpan.FromSeconds(4),
+				AutoReverse = true,
+				RepeatBehavior = RepeatBehavior.Forever
+			};
+
+			((LinearGradientBrush)KodSzintDoboz.Fill)
+				.GradientStops[1]
+				.BeginAnimation(GradientStop.OffsetProperty, KodAnim);
 		}
 	}
 }

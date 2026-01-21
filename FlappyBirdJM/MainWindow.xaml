@@ -39,5 +39,19 @@
 			<Image x:Name="Birb" Height="50" Canvas.Left="55" Source="/Kepek/Birb.png" Stretch="Fill" Canvas.Top="175" Width="50"/>
 		</Canvas>
 		<Canvas x:Name="RainLayer" IsHitTestVisible="False" />
+		<Canvas>
+			<TextBlock x:Name="PontText" Canvas.Left="20" Canvas.Top="20" FontSize="24" FontWeight="Bold" Foreground="White" Visibility="Hidden"/>
+		</Canvas>
+		<Canvas x:Name="KodSzint" IsHitTestVisible="False">
+			<Rectangle x:Name="KodSzintDoboz" Width="633" Height="450" Canvas.Right="0" Canvas.Top="0" Visibility="Hidden">
+				<Rectangle.Fill>
+					<LinearGradientBrush StartPoint="1,0" EndPoint="0,0">
+						<GradientStop Color="#DDDDDD" Offset="0"/>
+						<GradientStop Color="#AAFFFFFF" Offset="0.6"/>
+						<GradientStop Color="#00FFFFFF" Offset="1"/>
+					</LinearGradientBrush>
+				</Rectangle.Fill>
+			</Rectangle>
+		</Canvas>
 	</Grid>
 </Window>
