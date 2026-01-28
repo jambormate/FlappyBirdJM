@@ -270,7 +270,7 @@ namespace FlappyBirdJM
 			{
 				velocityY = jumpStrength;
 			}
-			BirbRotate.Angle = -25;
+			BirbRotate.Angle = -20;
 		}
 
 
