@@ -228,6 +228,10 @@ namespace FlappyBirdJM
 				newTop = 0;
 				velocityY = 0;
 			}
+			if (velocityY > 0) 
+			{
+				BirbRotate.Angle = Math.Min(BirbRotate.Angle + 4, 90);
+			}
 
 			Canvas.SetTop(Birb, newTop);
 
@@ -266,6 +270,7 @@ namespace FlappyBirdJM
 			{
 				velocityY = jumpStrength;
 			}
+			BirbRotate.Angle = -25;
 		}
 
 
@@ -367,6 +372,7 @@ namespace FlappyBirdJM
 			rainTimer.Stop();
 
 			MessageBox.Show("Game Over", "Flappy Bird");
+			BirbRotate.Angle = 0;
 			VisszaJatek();
 			RekordFrissites();
 		}

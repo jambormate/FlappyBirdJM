@@ -90,7 +90,11 @@
 			<Rectangle x:Name="csoBottom4" Width="55" Fill="GreenYellow"/>
 		</Canvas>
 		<Canvas>
-			<Image x:Name="Birb" Height="50" Canvas.Left="55" Source="/Kepek/Birb.png" Stretch="Fill" Canvas.Top="175" Width="50"/>
+			<Image x:Name="Birb" Height="50" Canvas.Left="55" Source="/Kepek/Birb.png" Stretch="Fill" Canvas.Top="175" Width="50" RenderTransformOrigin="0.5,0.5">
+				<Image.RenderTransform>
+					<RotateTransform x:Name="BirbRotate" Angle="0"/>
+				</Image.RenderTransform>
+			</Image>
 		</Canvas>
 		<Canvas x:Name="RainLayer" IsHitTestVisible="False" />
 		<Canvas>
